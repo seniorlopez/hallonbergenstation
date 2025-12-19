@@ -37,9 +37,11 @@ def calcular_llegada(hora_salida_str, minutos_a_sumar):
         return "??"
 
 # --- FUNCIÓN PARA TRAER DATOS ---
-@st.cache_data(ttl=30) # Caché de 30 segs para que sea más fresco
-def obtener_datos():
-    url = f"https://api.resrobot.se/v2.1/departureBoard?id={STATION_ID}&format=json&accessId={API_KEY}&duration=60"
+@st.cache_data(ttl=30)
+def obtener_datos(hora_consulta): # <--- 1. AHORA RECIBE LA HORA
+    # 2. AÑADIMOS &time={hora_consulta} Y AUMENTAMOS duration A 120
+    url = f"https://api.resrobot.se/v2.1/departureBoard?id={STATION_ID}&format=json&accessId={API_KEY}&duration=120&time={hora_consulta}"
+    
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -60,8 +62,8 @@ if st.button('🔄 Refrescar Tablero', use_container_width=True):
     st.cache_data.clear()
     st.rerun()
 
-# Cargando datos...
-data = obtener_datos()
+# Usamos la misma hora que mostramos en pantalla para que coincida perfectamente
+data = obtener_datos(hora_sistema)
 
 if not data or 'Departure' not in data:
     st.error("❌ No pude conectar con la central. Checa tu internet.")
