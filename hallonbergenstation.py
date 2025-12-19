@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 from datetime import datetime, timedelta
+import pytz 
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(
@@ -49,10 +50,14 @@ def obtener_datos(hora_consulta): # <--- 1. AHORA RECIBE LA HORA
     except Exception:
         return None
 
-# ================= INTERFAZ GRÁFICA =================
+# --- INTERFAZ GRÁFICA ---
 
-# 1. HORA ACTUAL CENTRADA (Gigante)
-hora_sistema = datetime.now().strftime("%H:%M")
+# Definimos la zona horaria de Suecia
+zona_suecia = pytz.timezone('Europe/Stockholm')
+
+# Obtenemos la hora EXACTA en Estocolmo ahora mismo
+hora_sistema = datetime.now(zona_suecia).strftime("%H:%M")
+
 st.markdown(f"<h1 style='text-align: center; font-size: 80px;'>{hora_sistema}</h1>", unsafe_allow_html=True)
 st.markdown(f"<p style='text-align: center; color: gray;'>Hora actual en tu dispositivo</p>", unsafe_allow_html=True)
 
